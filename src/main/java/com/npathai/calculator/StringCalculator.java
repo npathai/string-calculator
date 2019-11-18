@@ -8,11 +8,8 @@ public class StringCalculator {
         if (input.isEmpty()) {
             return 0;
         }
-        String[] summands = input.split(",");
-        if (summands.length == 1) {
-            return Integer.parseInt(summands[0]);
-        } else {
-            return Arrays.stream(summands).mapToInt(Integer::parseInt).sum();
-        }
+        return Arrays.stream(input.split(","))
+                .mapToInt(Integer::parseInt)
+                .sum();
     }
 }
