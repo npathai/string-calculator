@@ -42,10 +42,20 @@ public class StringCalculatorTest {
     }
 
     @Test
-    public void returnsSumOfArbitraryCommaSeparatedNumbers() {
+    public void returnsSumOfArbitraryDelimiterSeparatedNumbers() {
         int sum = calculator.add("1,2,3,4");
         assertThat(sum, is(10));
-        sum = calculator.add("1,2,3,4,5");
+        sum = calculator.add("1\n2\n3\n4\n5");
         assertThat(sum, is(15));
+    }
+
+    @Test
+    public void supportsNewLineAndCommaAsDelimiters() {
+        int sum = calculator.add("1,2\n3\n4");
+        assertThat(sum, is(10));
+        sum = calculator.add("1\n2,3,4,5");
+        assertThat(sum, is(15));
+        sum = calculator.add("1\n2\n3\n4\n6");
+        assertThat(sum, is(16));
     }
 }
