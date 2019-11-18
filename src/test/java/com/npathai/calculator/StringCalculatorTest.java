@@ -40,4 +40,12 @@ public class StringCalculatorTest {
         sum = calculator.add("5,2");
         assertThat(sum, is(7));
     }
+
+    @Test
+    public void returnsSumOfArbitraryCommaSeparatedNumbers() {
+        int sum = calculator.add("1,2,3,4");
+        assertThat(sum, is(10));
+        sum = calculator.add("1,2,3,4,5");
+        assertThat(sum, is(15));
+    }
 }

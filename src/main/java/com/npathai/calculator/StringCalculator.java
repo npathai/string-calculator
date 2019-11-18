@@ -1,5 +1,7 @@
 package com.npathai.calculator;
 
+import java.util.Arrays;
+
 public class StringCalculator {
 
     public int add(String input) {
@@ -10,7 +12,7 @@ public class StringCalculator {
         if (summands.length == 1) {
             return Integer.parseInt(summands[0]);
         } else {
-            return Integer.parseInt(summands[0]) + Integer.parseInt(summands[1]);
+            return Arrays.stream(summands).mapToInt(Integer::parseInt).sum();
         }
     }
 }
