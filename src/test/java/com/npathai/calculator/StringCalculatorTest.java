@@ -75,7 +75,6 @@ public class StringCalculatorTest {
         assertThat(sum, is(5));
     }
 
-
     @Test
     public void negativesAreNotAllowed() {
         expected.expect(IllegalArgumentException.class);
@@ -89,4 +88,11 @@ public class StringCalculatorTest {
                 .mapToObj(String::valueOf)
                 .collect(Collectors.joining(","));
     }
+
+    @Test
+    public void filtersNumbersStrictlyGreaterThan1000() {
+        int sum = calculator.add("6,1001,5,1002,2001,1000");
+        assertThat(sum, is(1011));
+    }
+
 }
