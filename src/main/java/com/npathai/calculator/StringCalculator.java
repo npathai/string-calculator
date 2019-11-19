@@ -1,7 +1,6 @@
 package com.npathai.calculator;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,23 +12,29 @@ public class StringCalculator {
             return 0;
         }
 
-        List<Integer> arguments = Arrays.stream(splitArguments(input))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
-
-        checkNoNegatives(arguments);
+        List<Integer> arguments = checkNoNegatives(parseArguments(input));
 
         return arguments.stream().mapToInt(Integer::intValue).sum();
     }
 
-    private static void checkNoNegatives(List<Integer> arguments) {
-        List<String> negatives = arguments.stream().filter(val -> val < 0)
-                .map(String::valueOf)
+    private List<Integer> parseArguments(String input) {
+        return Arrays.stream(splitArguments(input))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+    }
+
+    private static List<Integer> checkNoNegatives(List<Integer> arguments) {
+        List<Integer> negatives = arguments.stream()
+                .filter(val -> val < 0)
                 .collect(Collectors.toList());
 
         if (!negatives.isEmpty()) {
-            throw new IllegalArgumentException("negatives not allowed: " + String.join(",", negatives));
+            throw new IllegalArgumentException("negatives not allowed: " + negatives.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(",")));
         }
+
+        return arguments;
     }
 
     private String[] splitArguments(String input) {
