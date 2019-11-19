@@ -105,4 +105,10 @@ public class StringCalculatorTest {
         sum = calculator.add("//[~~~]\n1~~~2~~~4");
         assertThat(sum, is(7));
     }
+
+    @Test
+    public void supportsMultipleSingleLengthCustomSeparators() {
+        int sum = calculator.add("//[%][^]\n1^2%3^4");
+        assertThat(sum, is(10));
+    }
 }

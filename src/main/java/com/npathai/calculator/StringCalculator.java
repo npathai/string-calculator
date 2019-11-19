@@ -1,8 +1,10 @@
 package com.npathai.calculator;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -52,8 +54,22 @@ public class StringCalculator {
         if (containsCustomSeparator(input)) {
             String[] tokens = input.split("\\n");
             separator = tokens[0].substring(2);
-            if (isArbitraryLengthSeparator(separator)) {
-                separator = Pattern.quote(stripArbitraryLengthMarkers(separator));
+
+            Pattern regex = Pattern.compile("\\[(.*?)\\]");
+            Matcher matcher = regex.matcher(separator);
+            List<String> separators = new ArrayList<>();
+            while (matcher.find()) {
+                separators.add(matcher.group(1));
+            }
+
+            if (separators.size() == 1) {
+                separator = Pattern.quote(separators.get(0));
+            } else if (separators.size() > 1) {
+
+                separator = String.format("[%s]", separators.stream()
+                        .map(each -> each.charAt(0))
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(",")));
             } else {
                 separator = Pattern.quote(separator);
             }
@@ -64,13 +80,5 @@ public class StringCalculator {
 
     private boolean containsCustomSeparator(String input) {
         return input.startsWith("//");
-    }
-
-    private boolean isArbitraryLengthSeparator(String separator) {
-        return separator.startsWith("[") && separator.endsWith("]");
-    }
-
-    private String stripArbitraryLengthMarkers(String separator) {
-        return separator.substring(1, separator.length() - 1);
     }
 }
