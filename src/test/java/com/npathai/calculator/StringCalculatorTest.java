@@ -58,4 +58,13 @@ public class StringCalculatorTest {
         sum = calculator.add("1\n2\n3\n4\n6");
         assertThat(sum, is(16));
     }
+
+    @Test
+    public void supportsOptionallyChangingSeparatorToCustomValue() {
+        int sum = calculator.add("//;\n1;2");
+        assertThat(sum, is(3));
+        sum = calculator.add("//#\n3#2");
+        assertThat(sum, is(5));
+    }
+
 }
