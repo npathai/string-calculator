@@ -111,4 +111,10 @@ public class StringCalculatorTest {
         int sum = calculator.add("//[%][^]\n1^2%3^4");
         assertThat(sum, is(10));
     }
+
+    @Test
+    public void supportsMultipleLongerLengthCustomSeparators() {
+        int sum = calculator.add("//[foo][bar][baz]\n1foo2bar3baz4");
+        assertThat(sum, is(10));
+    }
 }

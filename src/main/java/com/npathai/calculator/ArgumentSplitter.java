@@ -39,11 +39,9 @@ class ArgumentSplitter {
             if (separators.size() == 1) {
                 separator = Pattern.quote(separators.get(0));
             } else if (separators.size() > 1) {
-
-                separator = String.format("[%s]", separators.stream()
-                        .map(each -> each.charAt(0))
-                        .map(String::valueOf)
-                        .collect(Collectors.joining(",")));
+                separator = String.format("%s", separators.stream()
+                        .map(Pattern::quote)
+                        .collect(Collectors.joining("|")));
             } else {
                 separator = Pattern.quote(separator);
             }
