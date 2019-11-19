@@ -26,28 +26,34 @@ class ArgumentSplitter {
         String separator = defaultSeparatorString;
 
         if (containsCustomSeparator(input)) {
-            String[] tokens = input.split("\\n");
-            separator = tokens[0].substring(2);
-
-            Pattern regex = Pattern.compile("\\[(.*?)\\]");
-            Matcher matcher = regex.matcher(separator);
-            List<String> separators = new ArrayList<>();
-            while (matcher.find()) {
-                separators.add(matcher.group(1));
-            }
-
-            if (separators.size() == 1) {
-                separator = Pattern.quote(separators.get(0));
-            } else if (separators.size() > 1) {
-                separator = String.format("%s", separators.stream()
-                        .map(Pattern::quote)
-                        .collect(Collectors.joining("|")));
-            } else {
-                separator = Pattern.quote(separator);
-            }
-            input = tokens[1];
+            return splitWithCustomSeparator(input);
         }
         return input.split(separator);
+    }
+
+    private String[] splitWithCustomSeparator(String input) {
+        String[] tokens = input.split("\\n");
+        String separator = tokens[0].substring(2);
+
+        Pattern regex = Pattern.compile("\\[(.*?)\\]");
+        Matcher matcher = regex.matcher(separator);
+        List<String> separators = new ArrayList<>();
+        while (matcher.find()) {
+            separators.add(matcher.group(1));
+        }
+
+        String formattedSeparator;
+        if (separators.size() == 1) {
+            formattedSeparator = Pattern.quote(separators.get(0));
+        } else if (separators.size() > 1) {
+            formattedSeparator = String.format("%s", separators.stream()
+                    .map(Pattern::quote)
+                    .collect(Collectors.joining("|")));
+        } else {
+            formattedSeparator = Pattern.quote(separator);
+        }
+        return tokens[1].split(formattedSeparator);
+
     }
 
     private boolean containsCustomSeparator(String input) {

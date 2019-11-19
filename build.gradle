@@ -21,13 +21,11 @@ repositories {
 dependencies {
 
     // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
+    testCompile 'junit:junit:4.12'
     // https://mvnrepository.com/artifact/org.hamcrest/hamcrest-core
     testCompile group: 'org.hamcrest', name: 'hamcrest-core', version: '2.1'
 
-}
+    // https://mvnrepository.com/artifact/pl.pragmatists/JUnitParams
+    testCompile group: 'pl.pragmatists', name: 'JUnitParams', version: '1.1.0'
 
-application {
-    // Define the main class for the application.
-    mainClassName = 'com.npathai.calculator.App'
 }
