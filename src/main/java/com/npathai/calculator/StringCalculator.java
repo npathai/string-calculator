@@ -3,6 +3,7 @@ package com.npathai.calculator;
 import java.util.Arrays;
 
 public class StringCalculator {
+    private static final String DEFAULT_SEPARATORS = "[,\\n]";
 
     public int add(String input) {
         if (input.isEmpty()) {
@@ -14,7 +15,7 @@ public class StringCalculator {
     }
 
     private String[] splitArguments(String input) {
-        String separator = "[,\\n]";
+        String separator = DEFAULT_SEPARATORS;
 
         if (input.startsWith("//")) {
             String[] tokens = input.split("\\n");
