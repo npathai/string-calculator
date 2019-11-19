@@ -2,13 +2,21 @@ package com.npathai.calculator;
 
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 
 public class StringCalculatorTest {
+
+    @Rule
+    public ExpectedException expected = ExpectedException.none();
 
     private StringCalculator calculator;
 
@@ -67,4 +75,18 @@ public class StringCalculatorTest {
         assertThat(sum, is(5));
     }
 
+
+    @Test
+    public void negativesAreNotAllowed() {
+        expected.expect(IllegalArgumentException.class);
+        expected.expectMessage(formatNegativesNotAllowedMessage(-2, -3));
+
+        calculator.add("1,-2,-3");
+    }
+
+    private String formatNegativesNotAllowedMessage(int... negatives) {
+        return "negatives not allowed: " + Arrays.stream(negatives)
+                .mapToObj(String::valueOf)
+                .collect(Collectors.joining(","));
+    }
 }
