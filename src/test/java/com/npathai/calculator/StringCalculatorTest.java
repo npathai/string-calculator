@@ -73,6 +73,8 @@ public class StringCalculatorTest {
         assertThat(sum, is(3));
         sum = calculator.add("//#\n3#2");
         assertThat(sum, is(5));
+        sum = calculator.add("//*\n3*2");
+        assertThat(sum, is(5));
     }
 
     @Test
@@ -95,4 +97,12 @@ public class StringCalculatorTest {
         assertThat(sum, is(1011));
     }
 
+    @Test
+    public void supportsArbitraryLengthSeparator() {
+        int sum = calculator.add("//[***]\n1***2***4");
+        assertThat(sum, is(7));
+
+        sum = calculator.add("//[~~~]\n1~~~2~~~4");
+        assertThat(sum, is(7));
+    }
 }

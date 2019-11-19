@@ -3,6 +3,7 @@ package com.npathai.calculator;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class StringCalculator {
@@ -48,11 +49,28 @@ public class StringCalculator {
     private String[] splitArguments(String input) {
         String separator = DEFAULT_SEPARATORS;
 
-        if (input.startsWith("//")) {
+        if (containsCustomSeparator(input)) {
             String[] tokens = input.split("\\n");
             separator = tokens[0].substring(2);
+            if (isArbitraryLengthSeparator(separator)) {
+                separator = Pattern.quote(stripArbitraryLengthMarkers(separator));
+            } else {
+                separator = Pattern.quote(separator);
+            }
             input = tokens[1];
         }
         return input.split(separator);
+    }
+
+    private boolean containsCustomSeparator(String input) {
+        return input.startsWith("//");
+    }
+
+    private boolean isArbitraryLengthSeparator(String separator) {
+        return separator.startsWith("[") && separator.endsWith("]");
+    }
+
+    private String stripArbitraryLengthMarkers(String separator) {
+        return separator.substring(1, separator.length() - 1);
     }
 }
