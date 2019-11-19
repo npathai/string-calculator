@@ -1,10 +1,13 @@
 package com.npathai.calculator;
 
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -12,7 +15,7 @@ import java.util.stream.Collectors;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-
+@RunWith(JUnitParamsRunner.class)
 public class StringCalculatorTest {
 
     @Rule
@@ -26,55 +29,72 @@ public class StringCalculatorTest {
     }
 
     @Test
-    public void additionReturnsZeroWhenPassedEmptyString() {
-        int sum = calculator.add("");
-        assertThat(sum, is(0));
+    public void sumOfEmptyStringIsZero() {
+        addAndAssert("", 0);
     }
 
     @Test
-    public void sumOfSingleNumberIsNumberItself() {
-        int sum = calculator.add("4");
-        assertThat(sum, is(4));
-        sum = calculator.add("5");
-        assertThat(sum, is(5));
-        sum = calculator.add("6");
-        assertThat(sum, is(6));
+    @Parameters({"4", "5", "6"})
+    public void sumOfSingleNumberIsNumberItself(int singleNumber) {
+        addAndAssert(String.valueOf(singleNumber), singleNumber);
     }
 
     @Test
-    public void returnsSumOfTwoCommaSeparatedNumbers() {
-        int sum = calculator.add("1,2");
-        assertThat(sum, is(3));
-        sum = calculator.add("5,2");
-        assertThat(sum, is(7));
+    @Parameters(method = "listOfTwoCommaSeparatedNumbers")
+    public void returnsSumOfTwoCommaSeparatedNumbers(String input, int expectedSum) {
+        addAndAssert(input, expectedSum);
+    }
+
+    public Object[] listOfTwoCommaSeparatedNumbers() {
+        return new Object[] {
+                new Object[] {"1,2", 3},
+                new Object[] {"5,2", 7}
+        };
     }
 
     @Test
-    public void returnsSumOfArbitraryDelimiterSeparatedNumbers() {
-        int sum = calculator.add("1,2,3,4");
-        assertThat(sum, is(10));
-        sum = calculator.add("1\n2\n3\n4\n5");
-        assertThat(sum, is(15));
+    @Parameters(method = "listOfArbitraryDelimiterSeparatedNumbers")
+    public void returnsSumOfArbitraryDelimiterSeparatedNumbers(String input, int expectedSum) {
+        addAndAssert(input, expectedSum);
+    }
+
+    public Object[] listOfArbitraryDelimiterSeparatedNumbers() {
+        return new Object[] {
+                new Object[] {"1,2,3,4", 10},
+                new Object[] {"1\n2\n3\n4\n5", 15}
+        };
     }
 
     @Test
-    public void supportsNewLineAndCommaAsDelimiters() {
-        int sum = calculator.add("1,2\n3\n4");
-        assertThat(sum, is(10));
-        sum = calculator.add("1\n2,3,4,5");
-        assertThat(sum, is(15));
-        sum = calculator.add("1\n2\n3\n4\n6");
-        assertThat(sum, is(16));
+    @Parameters(method = "listOfNumbersSeparatedByNewLineAndComma")
+    public void supportsNewLineAndCommaAsDelimiters(String input, int expectedSum) {
+        addAndAssert(input, expectedSum);
+    }
+
+    public Object[] listOfNumbersSeparatedByNewLineAndComma() {
+        return new Object[] {
+                new Object[] {"1,2\n3\n4", 10},
+                new Object[] {"1\n2,3,4,5", 15},
+                new Object[] {"1\n2\n3\n4\n6", 16}
+        };
     }
 
     @Test
-    public void supportsOptionallyChangingSeparatorToCustomValue() {
-        int sum = calculator.add("//;\n1;2");
-        assertThat(sum, is(3));
-        sum = calculator.add("//#\n3#2");
-        assertThat(sum, is(5));
-        sum = calculator.add("//*\n3*2");
-        assertThat(sum, is(5));
+    @Parameters(method = "listOfNumbersWithCustomSeparatorCharacter")
+    public void supportsOptionallyChangingSeparatorToCustomValue(String input, int expectedSum) {
+        addAndAssert(input, expectedSum);
+    }
+
+    private void addAndAssert(String input, int expectedSum) {
+        assertThat(calculator.add(input), is(expectedSum));
+    }
+
+    public Object[] listOfNumbersWithCustomSeparatorCharacter() {
+        return new Object[] {
+                new Object[] {"//;\n1;2", 3},
+                new Object[] {"//#\n3#2", 5},
+                new Object[] {"//*\n3*2", 5}
+        };
     }
 
     @Test
@@ -92,29 +112,56 @@ public class StringCalculatorTest {
     }
 
     @Test
-    public void filtersNumbersStrictlyGreaterThan1000() {
-        int sum = calculator.add("6,1001,5,1002,2001,1000");
-        assertThat(sum, is(1011));
+    @Parameters(method = "listOfNumbersWithSomeValuesGreaterThan1000")
+    public void filtersNumbersStrictlyGreaterThan1000(String input, int expectedSum) {
+        addAndAssert(input, expectedSum);
+    }
+
+    public Object[] listOfNumbersWithSomeValuesGreaterThan1000() {
+        return new Object[] {
+                new Object[] {"6,1001,5,1002,2001,1000", 1011},
+                new Object[] {"1000,1001,0", 1000},
+                new Object[] {"1001,1002,2001", 0},
+        };
     }
 
     @Test
-    public void supportsArbitraryLengthSeparator() {
-        int sum = calculator.add("//[***]\n1***2***4");
-        assertThat(sum, is(7));
+    @Parameters(method = "listOfNumbersWithArbitraryLengthSeparators")
+    public void supportsArbitraryLengthSeparator(String input, int expectedSum) {
+        addAndAssert(input, expectedSum);
+    }
 
-        sum = calculator.add("//[~~~]\n1~~~2~~~4");
-        assertThat(sum, is(7));
+    public Object[] listOfNumbersWithArbitraryLengthSeparators() {
+        return new Object[] {
+                new Object[] {"//[***]\n1***2***4", 7},
+                new Object[] {"//[~~~]\n1~~~2~~~4", 7},
+                new Object[] {"//[~#!]\n1~#!2~#!4", 7}
+        };
     }
 
     @Test
-    public void supportsMultipleSingleLengthCustomSeparators() {
-        int sum = calculator.add("//[%][^]\n1^2%3^4");
-        assertThat(sum, is(10));
+    @Parameters(method = "listOfNumbersWithMultipleSingleLengthCustomSeparators")
+    public void supportsMultipleSingleLengthCustomSeparators(String input, int expectedSum) {
+        addAndAssert(input, expectedSum);
+    }
+
+    public Object[] listOfNumbersWithMultipleSingleLengthCustomSeparators() {
+        return new Object[] {
+                new Object[] {"//[%][^]\n1^2%3^4", 10},
+                new Object[] {"//[$][&]\n1&2$3&4", 10},
+        };
     }
 
     @Test
-    public void supportsMultipleLongerLengthCustomSeparators() {
-        int sum = calculator.add("//[foo][bar][baz]\n1foo2bar3baz4");
-        assertThat(sum, is(10));
+    @Parameters(method = "listOfNumbersWithMultipleLongerLengthCustomSeparators")
+    public void supportsMultipleLongerLengthCustomSeparators(String input, int expectedSum) {
+        addAndAssert(input, expectedSum);
+    }
+
+    public Object[] listOfNumbersWithMultipleLongerLengthCustomSeparators() {
+        return new Object[] {
+                new Object[] {"//[foo][bar][baz]\n1foo2bar3baz4", 10},
+                new Object[] {"//[fizz][buzz]\n1fizz2buzz3fizz4", 10},
+        };
     }
 }
