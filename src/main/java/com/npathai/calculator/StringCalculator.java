@@ -13,16 +13,11 @@ public class StringCalculator {
             return 0;
         }
 
-        List<Integer> arguments = filterArguments(
-                checkNoNegatives(parseArguments(input)),
-                (arg) -> arg <= 1000);
-
-        return arguments.stream().mapToInt(Integer::intValue).sum();
-    }
-
-    private static List<Integer> filterArguments(List<Integer> arguments, Predicate<Integer> filter) {
-        return arguments.stream().filter(filter)
-                .collect(Collectors.toList());
+        return checkNoNegatives(parseArguments(input))
+                .stream()
+                .filter((arg) -> arg <= 1000)
+                .mapToInt(Integer::intValue)
+                .sum();
     }
 
     private List<Integer> parseArguments(String input) {
