@@ -162,6 +162,7 @@ public class StringCalculatorTest {
         return new Object[] {
                 new Object[] {"//[foo][bar][baz]\n1foo2bar3baz4", 10},
                 new Object[] {"//[fizz][buzz]\n1fizz2buzz3fizz4", 10},
+                new Object[] {"//[***][&&&]\n1***2&&&3***4", 10},
         };
     }
 }

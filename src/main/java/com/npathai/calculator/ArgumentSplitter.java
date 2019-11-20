@@ -23,37 +23,37 @@ class ArgumentSplitter {
     }
 
     String[] split(String input) {
-        String separator = defaultSeparatorString;
-
         if (containsCustomSeparator(input)) {
             return splitWithCustomSeparator(input);
         }
-        return input.split(separator);
+        return input.split(defaultSeparatorString);
     }
 
     private String[] splitWithCustomSeparator(String input) {
         String[] tokens = input.split("\\n");
         String separator = tokens[0].substring(2);
 
-        Pattern regex = Pattern.compile("\\[(.*?)\\]");
-        Matcher matcher = regex.matcher(separator);
-        List<String> separators = new ArrayList<>();
-        while (matcher.find()) {
-            separators.add(matcher.group(1));
-        }
+        List<String> multiSeparators = extractMultiSeparators(separator);
 
         String formattedSeparator;
-        if (separators.size() == 1) {
-            formattedSeparator = Pattern.quote(separators.get(0));
-        } else if (separators.size() > 1) {
-            formattedSeparator = String.format("%s", separators.stream()
+        if (!multiSeparators.isEmpty()) {
+            formattedSeparator = String.format("%s", multiSeparators.stream()
                     .map(Pattern::quote)
                     .collect(Collectors.joining("|")));
         } else {
             formattedSeparator = Pattern.quote(separator);
         }
         return tokens[1].split(formattedSeparator);
+    }
 
+    private List<String> extractMultiSeparators(String separator) {
+        Pattern regex = Pattern.compile("\\[(.*?)\\]");
+        Matcher matcher = regex.matcher(separator);
+        List<String> separators = new ArrayList<>();
+        while (matcher.find()) {
+            separators.add(matcher.group(1));
+        }
+        return separators;
     }
 
     private boolean containsCustomSeparator(String input) {

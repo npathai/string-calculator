@@ -37,11 +37,15 @@ public class StringCalculator {
                 .collect(Collectors.toList());
 
         if (!negatives.isEmpty()) {
-            throw new IllegalArgumentException("negatives not allowed: " + negatives.stream()
-                    .map(String::valueOf)
-                    .collect(Collectors.joining(",")));
+            throw new IllegalArgumentException(formatNegativeExceptionMessage(negatives));
         }
 
         return arguments;
+    }
+
+    private static String formatNegativeExceptionMessage(List<Integer> negatives) {
+        return "negatives not allowed: " + negatives.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
     }
 }
